@@ -16,7 +16,7 @@ function createTimeSlots() {
 
 const TIME_SLOTS = createTimeSlots()
 
-function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
+function SchedulePage({ onSave, onBack, activitiesByDay, addActivity, deleteActivity }) {
   const [selectedDay, setSelectedDay] = useState('จันทร์')
   const [showForm, setShowForm] = useState(false)
   const [startTime, setStartTime] = useState('09:00')
@@ -32,7 +32,6 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
     return () => window.removeEventListener('keydown', handleKey)
   }, [onBack])
 
-  // ลิสต์ของวันที่เลือก เรียงตามเวลาเริ่มอัตโนมัติ
   const todayActivities = [...activitiesByDay[selectedDay]].sort((a, b) =>
     a.startTime.localeCompare(b.startTime)
   )
@@ -41,16 +40,12 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
     setShowForm(true)
   }
 
-  function handleAdd() {
+  async function handleAdd() {
     if (note.trim() === '') {
       alert('กรุณากรอกโน้ตว่าจะทำอะไร')
       return
     }
-    const newActivity = { startTime, endTime, note }
-    setActivitiesByDay({
-      ...activitiesByDay,
-      [selectedDay]: [...activitiesByDay[selectedDay], newActivity],
-    })
+    await addActivity(selectedDay, { startTime, endTime, note })
     setNote('')
     setShowForm(false)
   }
@@ -60,40 +55,35 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
     setShowForm(false)
   }
 
-  function handleDelete(activityToDelete) {
-    setActivitiesByDay({
-      ...activitiesByDay,
-      [selectedDay]: activitiesByDay[selectedDay].filter(
-        (act) => act !== activityToDelete
-      ),
-    })
+  async function handleDelete(id) {
+    await deleteActivity(id)
   }
 
   return (
     <div className="schedule-page">
-      <h1 className="schedule-title"></h1>
+      <h1 className="schedule-title">แก้ไขตาราง</h1>
 
       <div className="schedule-card" style={{ display: 'flex', gap: 16 }}>
         {/* แท็บวันด้านซ้าย */}
         <div className="day-tabs">
           {DAYS.map((day) => (
-  <button
-    key={day}
-    onClick={() => setSelectedDay(day)}
-    className={selectedDay === day ? 'day-tab is-active' : 'day-tab'}
-  >
-    {day}
-  </button>
-))}
+            <button
+              key={day}
+              onClick={() => setSelectedDay(day)}
+              className={selectedDay === day ? 'day-tab is-active' : 'day-tab'}
+            >
+              {day}
+            </button>
+          ))}
         </div>
 
         {/* เนื้อหาฝั่งขวา */}
         <div style={{ flex: 1 }}>
           <h2 style={{ marginTop: 0 }}>ตารางวัน{selectedDay}</h2>
 
-          {todayActivities.map((act, index) => (
+          {todayActivities.map((act) => (
             <div
-              key={index}
+              key={act.id}
               className="activity-card"
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
             >
@@ -102,7 +92,7 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
                 <div>{act.note}</div>
               </div>
               <button
-                onClick={() => handleDelete(act)}
+                onClick={() => handleDelete(act.id)}
                 className="btn-secondary"
                 style={{ background: '#ffe5e5', color: '#d00' }}
               >
