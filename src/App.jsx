@@ -32,6 +32,7 @@ useEffect(() => {
       {page === 'today' && (
         <TodayPage
           onEdit={() => setPage('schedule')}
+          onLogout={() => setPage('login')}
           activitiesByDay={activitiesByDay}
         />
       )}

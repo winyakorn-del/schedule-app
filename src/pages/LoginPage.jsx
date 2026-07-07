@@ -43,6 +43,7 @@ function LoginPage({ onNext }) {
             placeholder="กรอก ID"
             value={id}
             onChange={(e) => setId(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
             className="input-field"
             style={{ marginBottom: 16 }}
           />
@@ -52,6 +53,7 @@ function LoginPage({ onNext }) {
             placeholder="กรอก Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleLogin() }}
             className="input-field"
             style={{ marginBottom: 16 }}
           />

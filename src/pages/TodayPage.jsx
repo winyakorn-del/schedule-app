@@ -15,7 +15,7 @@ function getTodayDateText() {
   })
 }
 
-function TodayPage({ onEdit, activitiesByDay }) {
+function TodayPage({ onEdit, onLogout, activitiesByDay }) {
   const todayName = getTodayName()
 
   // วันที่กำลังดู - เริ่มที่ "วันนี้" เลย
@@ -50,7 +50,10 @@ function TodayPage({ onEdit, activitiesByDay }) {
           <div>วันนี้</div>
           <div className="today-date">{getTodayDateText()}</div>
         </div>
-        <div className="today-clock">{clockText}</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <div className="today-clock">{clockText}</div>
+          <button onClick={onLogout} className="btn-secondary">ออกจากระบบ</button>
+        </div>
       </div>
 
       {/* กล่อง 7 วัน (อยู่บนตลอด) */}

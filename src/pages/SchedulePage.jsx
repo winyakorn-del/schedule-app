@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 const DAYS = ['จันทร์', 'อังคาร', 'พุธ', 'พฤหัสบดี', 'ศุกร์', 'เสาร์', 'อาทิตย์']
 
@@ -22,6 +22,15 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
   const [startTime, setStartTime] = useState('09:00')
   const [endTime, setEndTime] = useState('09:30')
   const [note, setNote] = useState('')
+
+  // กด Esc แล้วย้อนกลับ
+  useEffect(() => {
+    function handleKey(e) {
+      if (e.key === 'Escape') onBack()
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [onBack])
 
   // ลิสต์ของวันที่เลือก เรียงตามเวลาเริ่มอัตโนมัติ
   const todayActivities = [...activitiesByDay[selectedDay]].sort((a, b) =>
@@ -62,7 +71,7 @@ function SchedulePage({ onSave, onBack, activitiesByDay, setActivitiesByDay }) {
 
   return (
     <div className="schedule-page">
-      <h1 className="schedule-title">แก้ไขตาราง</h1>
+      <h1 className="schedule-title"></h1>
 
       <div className="schedule-card" style={{ display: 'flex', gap: 16 }}>
         {/* แท็บวันด้านซ้าย */}
